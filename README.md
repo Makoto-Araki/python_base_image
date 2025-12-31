@@ -63,15 +63,19 @@ $ cd ~
 $ exit
 ```
 
-## Github Actions 用のYAML作成
+### リモートリポジトリにプッシュ
 ```bash
-## Github Actions 用のディレクトリ作成
+## ステージング移行
 $ cd ~/python_base_image
-$ mkdir -p .github/workflows
+$ git add .
 
-## Github Actions 用のYAML作成
+## コミット
 $ cd ~/python_base_image
-$ vi .github/workflows/docker-build-push.yml
+$ git commit -m 20251231_01_コミット
+
+## リモートリポジトリにプッシュ
+$ cd ~/python_base_image
+$ git push origin main
 ```
 
 ### Dockerhub 準備
@@ -118,20 +122,29 @@ $ vi .github/workflows/docker-build-push.yml
 #### Repository Secret の登録確認
 ![github_actions_14](images/github_actions_14.png)
 
+## Github Actions 用のYAML作成
+```bash
+## Github Actions 用のディレクトリ作成
+$ cd ~/python_base_image
+$ mkdir -p .github/workflows
+
+## Github Actions 用のYAML作成
+$ cd ~/python_base_image
+$ vi .github/workflows/docker-build-push.yml
+```
+
 ### Github Actions 動作開始
 ```bash
-## バージョン情報の更新 ※0.0.7に更新
-$ cd python_base_image
-$ vi VERSIONS.txt
-
-## バージョン情報の展開
-$ cd python_base_image
-$ export $(grep -v '^#' VERSIONS.txt)
-
-## Github にプッシュ
-$ cd python_base_image
+## ステージング移行
+$ cd ~/python_base_image
 $ git add .
-$ git commit -m VERSION更新_2025122_01
+
+## コミット
+$ cd ~/python_base_image
+$ git commit -m 20251231_02_コミット
+
+## Github Actions 動作開始
+$ cd ~/python_base_image
 $ git push origin main
 ```
 
