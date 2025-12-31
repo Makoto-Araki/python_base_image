@@ -40,7 +40,7 @@ $ cd ~/python_base_image
 $ docker build --no-cache -t python_base_image:local .
 ```
 
-### 基盤イメージ内を確認
+### 基盤イメージ内を確認 ※Github Actions内に移行のため実行の必要なし
 ```bash
 ## 基盤イメージから一時コンテナ起動、シェル接続で確認作業を行う
 $ cd ~/python_base_image
