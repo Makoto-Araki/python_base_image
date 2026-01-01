@@ -1,45 +1,74 @@
+# -----------------------------------------------------------------------
+# ワークフロー名: RPA基盤Pythonイメージのビルドとプッシュ
+# 概要: RPA処理に必要なChrome/Selenium環境をパッケージ化したDockerイメージを作成し、
+#       脆弱性診断と動作確認（スモークテスト）を経てDockerHubへ公開します [1]。
+# -----------------------------------------------------------------------
 name: Build and Push Python Base Image
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]      # メインブランチへの更新時に自動実行
+    tags: [ 'v*.*.*' ]      # v1.0.0などのタグ付与時にリリース用として実行
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Build Image
+      # 1. イメージのビルド
+      # Dockerfileに基づき、RPA基盤イメージを構築します [1]。
+      - name: Build image
         run: docker build -t python_base_image:local .
 
+      # 2. 脆弱性スキャン (GitHub Advanced Securityの一環)
+      # 深刻な脆弱性がないか確認します。
+      # ignore-unfixed: パッチが未公開の脆弱性によるビルド停止を防ぎ、運用を優先します。
       - name: Run Vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'python_base_image:local'
           format: 'table'
-          exit-code: '1' # 深刻な脆弱性がある場合にビルドを失敗させる
+          exit-code: '1'
           severity: 'CRITICAL,HIGH'
-          ignore-unfixed: true # 修正手段が無い場合は無視する
+          ignore-unfixed: true
 
-      - name: Smoke Test (Verify versions)
+      # 3. 動作確認テスト (スモークテスト)
+      # RPAの稼働に必須となる各パッケージのバージョンが正しいか確認します [2]。
+      - name: Verify versions
         run: |
+          echo "Checking Google Chrome..."
           docker run --rm python_base_image:local google-chrome --version
+          echo "Checking ChromeDriver..."
           docker run --rm python_base_image:local chromedriver --version
-          docker run --rm python_base_image:local pip show selenium
+          echo "Checking Selenium..."
+          docker run --rm python_base_image:local pip list | grep selenium
 
-      - name: Selenium RPA Test
+      # 4. 実戦疎通テスト
+      # 実際にヘッドレスブラウザを起動し、Webサイトにアクセスできるか検証します。
+      - name: Run Selenium Functional Test
         run: |
           docker run --rm -v $(pwd):/app -w /app python_base_image:local python tests/test_selenium.py
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      # 5. DockerHubへのログイン
+      # GitHubのSecretsに保存された認証情報を使用します [3]。
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push to Dockerhub
+      # 6. イメージのプッシュ
+      # 'latest'タグと、Gitタグ名（例: v1.0.0）の両方を付与して公開します。
+      - name: Push to DockerHub
         run: |
-          docker tag python_base_image:local ${{ secrets.DOCKERHUB_USERNAME }}/python_base_image:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/python_base_image:latest
+          REPO=${{ secrets.DOCKERHUB_USERNAME }}/python_base_image
+          docker tag python_base_image:local $REPO:latest
+          docker push $REPO:latest
+          
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${{ github.ref_name }}
+            docker tag python_base_image:local $REPO:$VERSION
+            docker push $REPO:$VERSION
+          fi

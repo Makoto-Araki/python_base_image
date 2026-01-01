@@ -123,7 +123,7 @@ $ git push origin main
 #### Repository Secret の登録確認
 ![github_actions_14](images/github_actions_14.png)
 
-## Github Actions 用のYAML作成
+### Github Actions 用のYAML作成
 ```bash
 ## Github Actions 用のディレクトリ作成
 $ cd ~/python_base_image
@@ -134,7 +134,7 @@ $ cd ~/python_base_image
 $ vi .github/workflows/docker-build-push.yml
 ```
 
-### Github Actions 動作開始
+### 通常リリース
 ```bash
 ## ステージング移行
 $ cd ~/python_base_image
@@ -147,6 +147,25 @@ $ git commit -m 20251231_02_コミット
 ## Github Actions 動作開始
 $ cd ~/python_base_image
 $ git push origin main
+```
+
+### 安定板リリース(タグ付与)
+```bash
+## ステージング移行
+$ cd ~/python_base_image
+$ git add .
+
+## コミット
+$ cd ~/python_base_image
+$ git commit -m 安定版タグ付与(v1.0.0)
+
+## タグ付与
+$ cd ~/python_base_image
+$ git tag v1.0.0
+
+## Github Actions 動作開始
+$ cd ~/python_base_image
+$ git push origin main v1.0.0
 ```
 
 ### Github Actions 動作確認
