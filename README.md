@@ -1,3 +1,4 @@
+![Build Status](https://github.com/Makoto-Araki/python_base_image/actions/workflows/docker-build-push.yml/badge.svg)
 # python_base_image (基盤イメージ)
 
 ## 前提条件
