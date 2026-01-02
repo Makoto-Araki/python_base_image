@@ -149,25 +149,6 @@ $ cd ~/python_base_image
 $ git push origin main
 ```
 
-### 安定板リリース(タグ付与)
-```bash
-## ステージング移行
-$ cd ~/python_base_image
-$ git add .
-
-## コミット
-$ cd ~/python_base_image
-$ git commit -m 安定版タグ付与(v1.0.0)
-
-## タグ付与
-$ cd ~/python_base_image
-$ git tag v1.0.0
-
-## Github Actions 動作開始
-$ cd ~/python_base_image
-$ git push origin main v1.0.0
-```
-
 ### Github Actions 動作確認
 #### Github の Actions を押下
 ![github_actions_15](images/github_actions_15.png)
@@ -177,3 +158,31 @@ $ git push origin main v1.0.0
 
 #### Dockerhub のバージョン確認
 ![github_actions_17](images/github_actions_17.png)
+
+### 安定板リリース(タグ付与)
+```bash
+## ステージング移行
+$ cd ~/python_base_image
+$ git add .
+
+## コミット
+$ cd ~/python_base_image
+$ git commit -m v1.0.0
+
+## タグ付与
+$ cd ~/python_base_image
+$ git tag v1.0.0
+
+## Github Actions 動作開始
+$ cd ~/python_base_image
+$ git push origin main v1.0.0
+```
+### Github Actions 動作確認
+#### Github の Actions を押下
+![github_actions_15](images/github_actions_18.png)
+
+#### Github の Github Actions の結果確認
+![github_actions_16](images/github_actions_19.png)
+
+#### Dockerhub のバージョン確認
+![github_actions_17](images/github_actions_20.png)
