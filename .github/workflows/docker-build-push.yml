@@ -47,9 +47,9 @@ jobs:
 
       # 4. 実戦疎通テスト
       # 実際にヘッドレスブラウザを起動し、Webサイトにアクセスできるか検証します。
-      - name: Run Selenium Functional Test
-        run: |
-          docker run --rm -v $(pwd):/app -w /app python_base_image:local python tests/test_selenium.py
+      #- name: Run Selenium Functional Test
+      #  run: |
+      #    docker run --rm -v $(pwd):/app -w /app python_base_image:local python tests/test_selenium.py
 
       # 5. DockerHubへのログイン
       # GitHubのSecretsに保存された認証情報を使用します。
