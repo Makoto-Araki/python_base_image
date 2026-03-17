@@ -40,3 +40,6 @@ RUN wget -q "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_V
 
 # Selenium
 RUN pip install --no-cache-dir selenium==${SELENIUM_VERSION}
+
+# Others
+RUN pip install -r requirements.txt
