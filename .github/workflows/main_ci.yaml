@@ -1,0 +1,46 @@
+# -----------------------------------------------------------------------
+# Workflow名: Main CI
+# 目的:
+# - main ブランチの健全性を保証
+# - PRマージ後の最終チェック
+# - まだリリースはしない
+# -----------------------------------------------------------------------
+name: Main CI
+
+on:
+  # main ブランチへの push（= PR merge）時のみ実行
+  push:
+    branches: [ main ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. ソースコード取得
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Dockerイメージをビルド
+      - name: Build image
+        run: docker build -t python_base_image:main .
+
+      # 3. 脆弱性スキャン(セキュリティゲート)
+      - name: Run vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'python_base_image:main'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: true
+
+      # 4. 動作確認テスト
+      - name: Run Version Tests
+        run: |
+          echo "Checking Google Chrome..."
+          docker run --rm python_base_image:main google-chrome --version
+          echo "Checking ChromeDriver..."
+          docker run --rm python_base_image:main chromedriver --version
+          echo "Checking Selenium..."
+          docker run --rm python_base_image:main pip list | grep selenium

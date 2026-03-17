@@ -1,0 +1,36 @@
+# -----------------------------------------------------------------------
+# Workflow名: Pull Request CI
+# 目的:
+# - Pull Request 時の品質ゲート
+# - main ブランチを壊さないための事前チェック
+# - 副作用（push / deploy）は一切行わない
+# -----------------------------------------------------------------------
+name: Pull Request CI
+
+on:
+  # main 向けの Pull Request が作成・更新された時のみ実行
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. ソースコードの取得
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. DockerイメージをCI用にビルド
+      - name: Build image for CI
+        run: docker build -t python_base_image:ci .
+
+      # 3. 動作確認テスト
+      - name: Run Version Tests
+        run: |
+          echo "Checking Google Chrome..."
+          docker run --rm python_base_image:ci google-chrome --version
+          echo "Checking ChromeDriver..."
+          docker run --rm python_base_image:ci chromedriver --version
+          echo "Checking Selenium..."
+          docker run --rm python_base_image:ci pip list | grep selenium
