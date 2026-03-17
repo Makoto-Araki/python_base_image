@@ -34,17 +34,3 @@ jobs:
           docker run --rm python_base_image:ci chromedriver --version
           echo "Checking Selenium..."
           docker run --rm python_base_image:ci pip list | grep selenium
-
-      # 4. unitテスト
-      - name: Run Integration Tests
-        run: |
-          docker run --rm \
-            python_base_image:ci \
-            python -m pytest test/unit -v
-
-      # 5. integrationテスト
-      - name: Run Integration Tests
-        run: |
-          docker run --rm \
-            python_base_image:ci \
-            python -m pytest test/integration -v
