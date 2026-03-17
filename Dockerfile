@@ -42,4 +42,4 @@ RUN wget -q "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_V
 RUN pip install --no-cache-dir selenium==${SELENIUM_VERSION}
 
 # Others
-RUN pip install -r requirements.txt
+RUN pip install pytest
