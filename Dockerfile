@@ -21,8 +21,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 # バージョン指定
-ARG CHROME_VERSION=143.0.7499.169
-ARG SELENIUM_VERSION=4.27.0
+ARG CHROME_VERSION=147.0.7727.57
+ARG SELENIUM_VERSION=4.41.0
 
 # Google-Chrome
 RUN wget -q "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chrome-linux64.zip" \
